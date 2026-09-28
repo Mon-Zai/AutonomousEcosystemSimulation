@@ -15,6 +15,7 @@ public class WanderState : BaseState
 
     public override void OnEnter()
     {
+        base.OnEnter();
         SelectNextDestination();
     }
 
@@ -35,6 +36,7 @@ public class WanderState : BaseState
 
     public override void OnExit()
     {
+        base.OnExit();
         _targetNode = null;
     }
 

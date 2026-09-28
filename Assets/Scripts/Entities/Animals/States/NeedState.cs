@@ -53,7 +53,7 @@ public class NeedState : ParentBaseState
             .Select(x => (NeedType?)x.Type)
             .FirstOrDefault();
 
-        if (next == _currentNeed)
+        if (next == _currentNeed && _currentState != null)
             return;
         _currentState?.OnExit();
         _currentNeed = next;

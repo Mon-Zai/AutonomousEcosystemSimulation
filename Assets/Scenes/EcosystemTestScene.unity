@@ -209,7 +209,7 @@ Transform:
   m_GameObject: {fileID: 22772713}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.47, y: 5.18, z: -7.21}
+  m_LocalPosition: {x: -3.47, y: 5.18, z: -7.98}
   m_LocalScale: {x: 7.995228, y: 1, z: 0.46507}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -729,8 +729,8 @@ Transform:
   m_GameObject: {fileID: 138398553}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.70710677, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.58, y: 5.18, z: -5.04}
-  m_LocalScale: {x: 4.803214, y: 1, z: 0.46507}
+  m_LocalPosition: {x: 0.58, y: 5.18, z: -5.53}
+  m_LocalScale: {x: 5.3469377, y: 1, z: 0.46507}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 155474197}
@@ -969,7 +969,7 @@ GameObject:
   - component: {fileID: 161775778}
   - component: {fileID: 161775780}
   m_Layer: 0
-  m_Name: Sun
+  m_Name: DirectionalLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2162,6 +2162,7 @@ MonoBehaviour:
     m_Bits: 24
   _settings: {fileID: 11400000, guid: 05ee29eed2596e742bcc74a9a43b5ace, type: 2}
   _minDisntanceToTarget: 0.8
+  _pathRetryDelay: 0.5
   _entity: {fileID: 0}
 --- !u!114 &402321881
 MonoBehaviour:
@@ -2420,7 +2421,7 @@ GameObject:
   - component: {fileID: 479281854}
   - component: {fileID: 479281853}
   m_Layer: 0
-  m_Name: plane
+  m_Name: Grass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
