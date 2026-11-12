@@ -5,7 +5,7 @@
 /// </summary>
 public abstract class ParentBaseState : BaseState
 {
-    protected IState _currentState;
+    protected State _currentState;
 
     public ParentBaseState()
     {

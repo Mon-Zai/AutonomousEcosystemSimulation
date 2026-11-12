@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public abstract class AnimalBlackboard : MonoBehaviour
@@ -59,9 +57,11 @@ public abstract class AnimalBlackboard : MonoBehaviour
                 continue;
 
             var preferences = animal.FoodPreferences;
+            Debug.Log("preferences count: " + (preferences != null ? preferences.Count : "null"));
             if (preferences != null && preferences.Count > 0 && !preferences.Contains(food.GetFoodType()))
                 continue;
-
+            
+            Debug.Log("Yielding food: " + food.name);
             yield return food;
         }
     }

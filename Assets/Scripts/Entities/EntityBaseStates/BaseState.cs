@@ -1,22 +1,17 @@
 using UnityEngine;
 
-public abstract class BaseState : IState
+public abstract class BaseState : State
 {
-    public virtual void FixedUpdate()
-    {
-    }
-
-    public virtual void OnEnter()
+    
+    private void DebugEnter()
     {
         Debug.Log("Entering state: " + GetType().Name);
     }
 
-    public virtual void OnExit()
+    private void DebugExit()
     {
         Debug.Log("Exiting state: " + GetType().Name);
     }
 
-    public virtual void Update()
-    {
-    }
+
 }

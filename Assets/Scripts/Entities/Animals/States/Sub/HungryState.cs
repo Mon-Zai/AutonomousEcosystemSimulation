@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 
 public class HungryState : BaseState
 {
@@ -17,9 +15,10 @@ public class HungryState : BaseState
         _animalBlackboard = animalBlackboard;
         _animalController = animalController;
         _hungryNeed = animalBlackboard.Needs.FirstOrDefault(n => n.Type == NeedType.Hunger);
+        OnUpdate += TrySearchFood;
     }
 
-    public override void Update()
+    private void TrySearchFood()
     {
         if (_hungryNeed == null)
             return;

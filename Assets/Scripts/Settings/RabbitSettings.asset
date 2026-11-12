@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RabbitSettings
   m_EditorClassIdentifier: 
   MaxSpeed: 20
-  MaxAcceleration: 8
-  SlowingRadius: 1.5
+  MaxAcceleration: 15
+  SlowingRadius: 1.77
   linearDrag: 0.09
   PursuePredictionTime: 1
   EvadePredictionTime: 1

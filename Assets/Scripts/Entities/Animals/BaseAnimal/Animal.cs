@@ -25,13 +25,17 @@ public abstract class Animal : Entity
 
     protected override void Update()
     {
-        base.Update();
+ 
+    }
+    protected void FixedUpdate()
+    {
+       base.Update();
         _acceleration = Vector3.ClampMagnitude(_acceleration, _settings.MaxAcceleration);
-        Vector3 newVelocity = _velocity + _acceleration * Time.deltaTime;
+        Vector3 newVelocity = _velocity + _acceleration * Time.fixedDeltaTime;
         newVelocity = Vector3.ClampMagnitude(newVelocity, _settings.MaxSpeed);
         newVelocity *= 1f - _settings.linearDrag;
         _velocity = newVelocity;
-        transform.position += _velocity * Time.deltaTime;
+        transform.position += _velocity * Time.fixedDeltaTime;
         _acceleration = Vector3.zero;
     }
 }

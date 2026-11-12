@@ -13,9 +13,10 @@ public class ThirstyState : BaseState
         _animalBlackboard = animalBlackboard;
         _animalController = animalController;
         _thirstyNeed = animalBlackboard.Needs.FirstOrDefault(n => n.Type == NeedType.Thirst);
+        OnUpdate += TrySearchWaterSource;
     }
 
-    public override void Update()
+    private void TrySearchWaterSource()
     {
         if (_thirstyNeed == null)
             return;
