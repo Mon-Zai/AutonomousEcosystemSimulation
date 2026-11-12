@@ -2,7 +2,9 @@ using System;
 
 public class StateTransition<T>
 {
+    public event Action OnTransition;
     private IPredicate _predicate;
+    public void InvokeTransition() => OnTransition?.Invoke();
 
     public T TargetKey { get; private set; }
 

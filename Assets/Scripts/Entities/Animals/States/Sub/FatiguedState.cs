@@ -12,9 +12,11 @@ public class FatiguedState : BaseState
         _animalBlackboard = animalBlackboard;
         _animalController = animalController;
         _fatiguedNeed = animalBlackboard.Needs.FirstOrDefault(n => n.Type == NeedType.Fatigue);
+        OnUpdate += TrySearchRestArea;
+
     }
 
-    public override void Update()
+    private void TrySearchRestArea()
     {
         if (_fatiguedNeed == null)
             return;

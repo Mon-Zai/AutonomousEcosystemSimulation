@@ -11,15 +11,12 @@ public class WanderState : BaseState
     public WanderState(AnimalController animalController)
     {
         _animalController = animalController;
+        OnEnter += SelectNextDestination;
+        OnUpdate += TryWander;
+        OnExit += ResetDestination;
     }
 
-    public override void OnEnter()
-    {
-        base.OnEnter();
-        SelectNextDestination();
-    }
-
-    public override void Update()
+    private void TryWander()
     {
         _animalController.Animal.PerformWanderActivity();
 
@@ -34,9 +31,8 @@ public class WanderState : BaseState
             SelectNextDestination();
     }
 
-    public override void OnExit()
+    private void ResetDestination()
     {
-        base.OnExit();
         _targetNode = null;
     }
 

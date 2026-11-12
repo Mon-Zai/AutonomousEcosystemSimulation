@@ -30,19 +30,13 @@ public class NeedState : ParentBaseState
         {
             state.SatisfactionChanged += UpdateCurrentNeed;
         }
+        OnEnter += () =>
+        {
+            UpdateCurrentNeed();
+        };
+        OnUpdate+= () => _currentState?.InvokeOnUpdate();
+        OnFixedUpdate += () => _currentState?.InvokeOnFixedUpdate();
     }
-
-    public override void OnEnter()
-    {
-        UpdateCurrentNeed();
-    }
-    public override void Update()
-    {
-        _currentState?.Update();
-    }
-
-    public override void FixedUpdate() => _currentState?.FixedUpdate();
-
     private void UpdateCurrentNeed(Need need = null)
     {
         if (need != null && need.Type != _currentNeed) return;
@@ -55,7 +49,7 @@ public class NeedState : ParentBaseState
 
         if (next == _currentNeed && _currentState != null)
             return;
-        _currentState?.OnExit();
+        _currentState?.InvokeOnExit();
         _currentNeed = next;
 
         if (next == null)
@@ -63,8 +57,7 @@ public class NeedState : ParentBaseState
             _currentState = null;
             return;
         }
-
         _currentState = _needStates.TryGetValue(next.Value, out var state) ? state : null;
-        _currentState?.OnEnter();
+        _currentState?.InvokeOnEnter();
     }
 }

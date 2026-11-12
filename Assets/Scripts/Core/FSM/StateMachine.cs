@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class StateMachine<T>
 {
-    IState _currentState;
+    State _currentState;
     T _currentKey;
     private TransitionHandler<T> _transitionHandler;
-    private Dictionary<T, IState> _states = new Dictionary<T, IState>();
+    private Dictionary<T, State> _states = new Dictionary<T, State>();
     public T CurrentKey => _currentKey;
-    public IState CurrentState => _currentState;
+    public State CurrentState => _currentState;
 
     public StateMachine()
     {
@@ -16,16 +16,16 @@ public class StateMachine<T>
     }
     public void Update()
     {
-        _currentState?.Update();
+        _currentState?.InvokeOnUpdate();
         _transitionHandler?.CheckTransitions(TransitionContext.Update, _currentKey);
     }
     public void FixedUpdate()
     {
-        _currentState?.FixedUpdate();
+        _currentState?.InvokeOnFixedUpdate();
         _transitionHandler?.CheckTransitions(TransitionContext.FixedUpdate, _currentKey);
     }
 
-    public StateBuilder<T> AddState(T key, IState state)
+    public StateBuilder<T> AddState(T key, State state)
     {
         _states[key] = state;
         _transitionHandler.RegisterState(key);
@@ -33,19 +33,22 @@ public class StateMachine<T>
     }
     public void ChangeState(T key)
     {
-        if (!_states.TryGetValue(key, out IState newState))
+        if (!_states.TryGetValue(key, out State newState))
         {
             Debug.LogError($"State {key} not found.");
             return;
         }
         if (_currentState != null && EqualityComparer<T>.Default.Equals(_currentKey, key)) return;
 
-        _currentState?.OnExit();
+        _currentState?.InvokeOnExit();
         _currentKey = key;
         _currentState = newState;
-        _currentState.OnEnter();
+        _currentState.InvokeOnEnter();
     }
-
+    public bool TryGetState(T key, out State state)
+    {
+        return _states.TryGetValue(key, out state);
+    }
     public void AddTransition(T from, StateTransition<T> transition, TransitionContext context)
     => _transitionHandler.AddTransition(from, transition, context);
 

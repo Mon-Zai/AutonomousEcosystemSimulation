@@ -66,6 +66,7 @@ public class TransitionHandler<T>
         {
             if (transition.Evaluate())
             {
+                transition.InvokeTransition();
                 _stateMachine.ChangeState(transition.TargetKey);
                 break;
             }
