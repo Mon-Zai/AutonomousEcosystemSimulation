@@ -29,10 +29,11 @@ public class RabbitController : AnimalController
 
     private void Update()
     {
-        _perception?.ScanIfNeeded();
         _rabbitFSM?.Update();
         _currentState = _rabbitFSM?.CurrentState;
     }
 
     private void FixedUpdate() => _rabbitFSM?.FixedUpdate();
+    private void OnDisable() => _rabbitFSM?.Stop();
+    private void OnEnable() => _rabbitFSM?.Resume();
 }

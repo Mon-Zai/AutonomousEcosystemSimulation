@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ef3eff6aea1ac46a339843ed1dd6a3, type: 3}
   m_Name: RabbitSettings
   m_EditorClassIdentifier: 
-  MaxSpeed: 20
-  MaxAcceleration: 15
-  SlowingRadius: 1.77
-  linearDrag: 0.09
+  MaxSpeed: 2
+  MaxAcceleration: 8
+  SlowingRadius: 2
+  linearDrag: 0.01
   PursuePredictionTime: 1
   EvadePredictionTime: 1

@@ -7,10 +7,36 @@ public abstract class Animal : Entity
     [SerializeField] protected AnimalSettings _settings;
     public List<FoodType> FoodPreferences => _foodPreferences;
     public AnimalSettings Settings => _settings;
+    private Health _healthComponent;
 
     protected override void Awake()
     {
         base.Awake();
+        _healthComponent = GetComponent<Health>();
+        if (_healthComponent != null) _healthComponent.OnDeath += Die;
+    }
+
+    private void OnDestroy()
+    {
+        if (_healthComponent != null) _healthComponent.OnDeath -= Die;
+    }
+
+    private void Die()
+    {
+        GetComponent<PathFinder>()?.Stop();
+        Stop();
+        var controller = GetComponent<AnimalController>();
+        if (controller != null) controller.enabled = false;
+        var perception = GetComponent<AnimalPerception>();
+        if (perception != null) perception.enabled = false;
+        var blackboard = GetComponent<AnimalBlackboard>();
+        if (blackboard != null && blackboard.Needs != null)
+            foreach (var need in blackboard.Needs)
+            {
+                need.StopAllCoroutines();
+                need.enabled = false;
+            }
+        enabled = false;
     }
 
     public virtual void PerformWanderActivity()

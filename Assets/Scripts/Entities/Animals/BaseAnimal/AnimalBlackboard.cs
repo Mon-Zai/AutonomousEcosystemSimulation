@@ -57,11 +57,9 @@ public abstract class AnimalBlackboard : MonoBehaviour
                 continue;
 
             var preferences = animal.FoodPreferences;
-            Debug.Log("preferences count: " + (preferences != null ? preferences.Count : "null"));
             if (preferences != null && preferences.Count > 0 && !preferences.Contains(food.GetFoodType()))
                 continue;
             
-            Debug.Log("Yielding food: " + food.name);
             yield return food;
         }
     }
@@ -81,6 +79,10 @@ public abstract class AnimalBlackboard : MonoBehaviour
             _ => false
         };
     }
+
+    public bool CanInteractWith(Component resource) => resource != null &&
+        (resource.transform.position - transform.position).sqrMagnitude <= _detectionDistance * _detectionDistance &&
+        RaycastUtils.IsInLineOfSight(transform.position, resource.transform.position, _obstacleLayer);
 
     public bool IsInFrontOfObject(GameObject objectInFront)
     {

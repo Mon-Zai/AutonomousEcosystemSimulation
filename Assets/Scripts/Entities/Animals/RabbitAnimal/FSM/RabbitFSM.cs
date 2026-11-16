@@ -11,6 +11,7 @@ public class RabbitFSM
 
     private WanderState _wanderState;
     private NeedState _needState;
+    private bool _running = true;
     public string CurrentState => _stateMachine.CurrentState.ToString();
     public RabbitFSM(RabbitController rabbitController, RabbitBlackboard rabbitBlackboard)
     {
@@ -24,9 +25,24 @@ public class RabbitFSM
         _stateMachine.ChangeState(RabbitState.Wander);
     }
 
-    public void Update() => _stateMachine.Update();
+    public void Update() { if (_running) _stateMachine.Update(); }
 
-    public void FixedUpdate() => _stateMachine.FixedUpdate();
+    public void FixedUpdate() { if (_running) _stateMachine.FixedUpdate(); }
+
+    public void Stop()
+    {
+        if (!_running) return;
+        _running = false;
+        _stateMachine.CurrentState.InvokeOnExit();
+        _controller.StopMovement();
+    }
+
+    public void Resume()
+    {
+        if (_running) return;
+        _running = true;
+        _stateMachine.CurrentState.InvokeOnEnter();
+    }
 
     private void InitializeStates()
     {

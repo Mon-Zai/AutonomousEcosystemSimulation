@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimalPerception : MonoBehaviour
@@ -5,48 +7,29 @@ public class AnimalPerception : MonoBehaviour
     [SerializeField] private float _detectionRadius = 8f;
     [SerializeField] private float _scanInterval = 1f;
     [SerializeField] private LayerMask _resourceLayers = ~0;
-    [SerializeField] private int _overlapBufferSize = 64;
-
     private AnimalBlackboard _blackboard;
-    private Collider[] _overlapResults;
     private float _nextScanTime;
-
-    private void Awake()
+    private readonly List<SpatialMember> _results = new();
+    public IReadOnlyList<SpatialMember> Results => _results;
+    public event Action Scanned;
+    public void Initialize(AnimalBlackboard blackboard) => _blackboard = blackboard;
+    private void OnEnable() => PerceptionScheduler.Register(this);
+    private void OnDisable() => PerceptionScheduler.Unregister(this);
+    public void ProcessScan()
     {
-        _overlapResults = new Collider[Mathf.Max(1, _overlapBufferSize)];
-    }
-
-    public void Initialize(AnimalBlackboard blackboard)
-    {
-        _blackboard = blackboard;
-    }
-
-    public void ScanIfNeeded()
-    {
-        if (_blackboard == null || Time.time < _nextScanTime)
-            return;
-
+        if (_blackboard == null || Time.time < _nextScanTime) return;
         _nextScanTime = Time.time + Mathf.Max(0.1f, _scanInterval);
-        int overlapCount = Physics.OverlapSphereNonAlloc(
-            transform.position,
-            _detectionRadius,
-            _overlapResults,
-            _resourceLayers,
-            QueryTriggerInteraction.Collide);
-
+        SpatialGrid.Query(transform.position, _detectionRadius, _results);
+        _results.RemoveAll(member => (_resourceLayers.value & (1 << member.gameObject.layer)) == 0);
         _blackboard.ForgetUnavailableResources();
-        for (int i = 0; i < overlapCount; i++)
+        foreach (var member in _results)
         {
-            var collider = _overlapResults[i];
-            if (collider == null)
-                continue;
-
-            _blackboard.Remember(collider.GetComponentInParent<Food>());
-            _blackboard.Remember(collider.GetComponentInParent<WaterSource>());
-            _blackboard.Remember(collider.GetComponentInParent<RestArea>());
+            _blackboard.Remember(member.GetComponent<Food>());
+            _blackboard.Remember(member.GetComponent<WaterSource>());
+            _blackboard.Remember(member.GetComponent<RestArea>());
         }
+        Scanned?.Invoke();
     }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;

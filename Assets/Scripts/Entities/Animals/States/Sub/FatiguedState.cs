@@ -13,18 +13,19 @@ public class FatiguedState : BaseState
         _animalController = animalController;
         _fatiguedNeed = animalBlackboard.Needs.FirstOrDefault(n => n.Type == NeedType.Fatigue);
         OnUpdate += TrySearchRestArea;
+        OnExit += () => { _restArea = null; _animalController.StopMovement(); };
 
     }
 
     private void TrySearchRestArea()
     {
-        if (_fatiguedNeed == null)
+        if (_fatiguedNeed == null || _fatiguedNeed.IsSatisfied)
             return;
 
         if (_restArea == null || !_restArea.isActiveAndEnabled)
         {
             _restArea = _animalBlackboard.GetKnownRestAreas()
-                .Where(area => area != null)
+                .Where(area => area != null && area.isActiveAndEnabled)
                 .OrderBy(area => Vector3.Distance(_animalController.Animal.transform.position, area.transform.position))
                 .FirstOrDefault();
         }
@@ -34,10 +35,12 @@ public class FatiguedState : BaseState
             return;
         }
 
-        _animalController.MoveTo(_restArea.transform.position);
-        if (!_animalController.HasReachedDestination)
+        if (!_animalBlackboard.CanInteractWith(_restArea))
+        {
+            _animalController.MoveTo(_restArea.transform.position);
             return;
-        _animalController.Animal.Stop();
+        }
+        _animalController.StopMovement();
         _restArea.Rest(_fatiguedNeed, Time.deltaTime);
     }
 }

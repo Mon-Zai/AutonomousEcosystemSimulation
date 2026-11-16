@@ -76,7 +76,6 @@ public class PathFinder : MonoBehaviour
             _pathFailed = false;
             Vector3 steeringForce = _steeringBehavior.Seek(targetPosition, _settings.MaxSpeed);
             _entity.ApplyForce(steeringForce);
-            //Debug.Log("Directly seeking target: " + targetPosition);
             return;
         }
 
@@ -96,11 +95,20 @@ public class PathFinder : MonoBehaviour
         }
         if (!_isFollowingPath)
         {
-            //Debug.Log("Starting to follow path from " + startNode.transform.position + " to " + targetNode.transform.position);
             _followPathCoroutine = StartCoroutine(FollowPath(startNode, targetNode));
         }
 
     }
+
+    public void Stop()
+    {
+        CancelFollowingPath();
+        _hasCurrentTarget = false;
+        _hasReachedDestination = false;
+        _pathFailed = false;
+    }
+
+    private void OnDisable() => Stop();
 
     private void CancelFollowingPath()
     {

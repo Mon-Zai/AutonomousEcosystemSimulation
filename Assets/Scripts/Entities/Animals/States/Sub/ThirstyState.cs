@@ -1,5 +1,4 @@
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ThirstyState : BaseState
@@ -14,17 +13,18 @@ public class ThirstyState : BaseState
         _animalController = animalController;
         _thirstyNeed = animalBlackboard.Needs.FirstOrDefault(n => n.Type == NeedType.Thirst);
         OnUpdate += TrySearchWaterSource;
+        OnExit += () => { _waterSource = null; _animalController.StopMovement(); };
     }
 
     private void TrySearchWaterSource()
     {
-        if (_thirstyNeed == null)
+        if (_thirstyNeed == null || _thirstyNeed.IsSatisfied)
             return;
 
         if (_waterSource == null || !_waterSource.isActiveAndEnabled)
         {
             _waterSource = _animalBlackboard.GetKnownWaterSources()
-                .Where(source => source != null)
+                .Where(source => source != null && source.isActiveAndEnabled)
                 .OrderBy(source => Vector3.Distance(_animalController.Animal.transform.position, source.transform.position))
                 .FirstOrDefault();
         }
@@ -34,10 +34,12 @@ public class ThirstyState : BaseState
             return;
         }
 
-        _animalController.MoveTo(_waterSource.transform.position);
-        if (!_animalBlackboard.IsInFrontOfObject(_waterSource.gameObject))
+        if (!_animalBlackboard.CanInteractWith(_waterSource))
+        {
+            _animalController.MoveTo(_waterSource.transform.position);
             return;
-
+        }
+        _animalController.StopMovement();
         _waterSource.Drink(_thirstyNeed);
         _waterSource = null;
     }

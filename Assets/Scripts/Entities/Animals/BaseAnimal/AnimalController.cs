@@ -19,6 +19,12 @@ public abstract class AnimalController : MonoBehaviour
         _perception = GetComponent<AnimalPerception>();
     }
 
+    public void StopMovement()
+    {
+        _pathFinder?.Stop();
+        _animal?.Stop();
+    }
+
     public void MoveTo(Vector3 targetPosition)
     {
         _pathFinder?.MoveTo(targetPosition);
